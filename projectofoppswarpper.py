@@ -1,42 +1,59 @@
-print("oops-wrapper-project")
-print("employee --management --system")
-print("1. create person")
-print("2. create employee")
-print("3. create manager")
-print("4. create developer")
-print("5. show details")
-print("6. exit")
-
 
 class Person:
     def __init__(self, name, age):
         self.name = name
         self.age = age
 
-    def display(self):
-        print(f"Name: {self.name}, Age: {self.age}")
+    def __str__(self):
+        return f"Name: {self.name}, Age: {self.age}"
+
+    @classmethod
+    def create_person(cls):
+        name = input("Enter name: ")
+        age = int(input("Enter age: "))
+        return cls(name, age)
 
 
 class Employee(Person):
     def __init__(self, name, age, employee_id, salary):
         super().__init__(name, age)
-        self._employee_id = employee_id
-        self.salary = salary
 
-    def display(self):
-        super().display()
-        print(f"Employee ID: {self._employee_id}, Salary: {self.salary}")
+        # Private attributes
+        self.__employee_id = employee_id
+        self.__salary = salary
 
+    def __str__(self):
+        return (
+            f"{super().__str__()}, "
+            f"Employee ID: {self.get_employee_id()}, "
+            f"Salary: {self.get_salary()}"
+        )
+
+    @classmethod
+    def create_employee(cls):
+        name = input("Enter name: ")
+        age = int(input("Enter age: "))
+        employee_id = input("Enter employee ID: ")
+        salary = float(input("Enter salary: "))
+
+        return cls(name, age, employee_id, salary)
+
+    # Getter for employee ID
     def get_employee_id(self):
-        return self._employee_id
+        return self.__employee_id
 
-    def set_employee_id(self, employee_id):
-        self._employee_id = employee_id
+    # Getter for salary
+    def get_salary(self):
+        return self.__salary
+
+    # Setter for salary
+    def set_salary(self, salary):
+        self.__salary = salary
 
     def __del__(self):
         print(
             f"Employee {self.name} with ID "
-            f"{self._employee_id} has been deleted."
+            f"{self.get_employee_id()} has been deleted."
         )
 
 
@@ -45,191 +62,192 @@ class Manager(Employee):
         super().__init__(name, age, employee_id, salary)
         self.department = department
 
-    def display(self):
-        super().display()
-        print(f"Department: {self.department}")
+    def __str__(self):
+        return (
+            f"{super().__str__()}, "
+            f"Department: {self.department}"
+        )
+
+    @classmethod
+    def create_manager(cls):
+        name = input("Enter name: ")
+        age = int(input("Enter age: "))
+        employee_id = input("Enter employee ID: ")
+        salary = float(input("Enter salary: "))
+        department = input("Enter department: ")
+
+        return cls(
+            name,
+            age,
+            employee_id,
+            salary,
+            department
+        )
 
 
 class Developer(Employee):
     def __init__(
-        self, name, age, employee_id, salary, programming_language
+        self,
+        name,
+        age,
+        employee_id,
+        salary,
+        programming_language
     ):
         super().__init__(name, age, employee_id, salary)
         self.programming_language = programming_language
 
-    def display(self):
-        super().display()
-        print(f"Programming Language: {self.programming_language}")
+    def __str__(self):
+        return (
+            f"{super().__str__()}, "
+            f"Programming Language: {self.programming_language}"
+        )
+
+    @classmethod
+    def create_developer(cls):
+        name = input("Enter name: ")
+        age = int(input("Enter age: "))
+        employee_id = input("Enter employee ID: ")
+        salary = float(input("Enter salary: "))
+        programming_language = input(
+            "Enter programming language: "
+        )
+
+        return cls(
+            name,
+            age,
+            employee_id,
+            salary,
+            programming_language
+        )
 
 
-employees = []
+# List to store all objects
+employee = []
 
 
 while True:
-    choice = input("Enter your choice (1-6): ")
+    print("\n1. Create Person")
+    print("2. Create Employee")
+    print("3. Create Manager")
+    print("4. Create Developer")
+    print("5. Show Details")
+    print("6. Exit")
 
-    # Create Person
+    choice = input("Enter your choice: ")
+
     if choice == "1":
-        name = input("Enter name: ")
-        age = int(input("Enter age: "))
+        person = Person.create_person()
+        employee.append(person)
 
-        person = Person(name, age)
-        employees.append(person)
-
-        print("Person created successfully.")
-
-    # Create Employee
     elif choice == "2":
         employee_id = input("Enter employee ID: ")
 
         # Check duplicate ID
         duplicate = False
 
-        for i in employees:
+        for i in employee:
             if isinstance(i, Employee):
                 if i.get_employee_id() == employee_id:
                     duplicate = True
                     break
 
         if duplicate:
-            print("Employee ID already exists. Please enter a unique ID.")
-        else:
-            name = input("Enter name: ")
-            age = int(input("Enter age: "))
-            salary = float(input("Enter salary: "))
-
-            employee = Employee(
-                name, age, employee_id, salary
+            print(
+                "Employee ID already exists. "
+                "Please enter a unique ID."
             )
+        else:
+            emp = Employee.create_employee()
+            employee.append(emp)
 
-            employees.append(employee)
-            print("Employee created successfully.")
-
-    # Create Manager
     elif choice == "3":
         employee_id = input("Enter employee ID: ")
 
+        # Check duplicate ID
         duplicate = False
 
-        for i in employees:
+        for i in employee:
             if isinstance(i, Employee):
                 if i.get_employee_id() == employee_id:
                     duplicate = True
                     break
 
         if duplicate:
-            print("Employee ID already exists. Please enter a unique ID.")
-        else:
-            name = input("Enter name: ")
-            age = int(input("Enter age: "))
-            salary = float(input("Enter salary: "))
-            department = input("Enter department: ")
-
-            manager = Manager(
-                name,
-                age,
-                employee_id,
-                salary,
-                department
+            print(
+                "Employee ID already exists. "
+                "Please enter a unique ID."
             )
+        else:
+            manager = Manager.create_manager()
+            employee.append(manager)
 
-            employees.append(manager)
-            print("Manager created successfully.")
-
-    # Create Developer
     elif choice == "4":
         employee_id = input("Enter employee ID: ")
 
+        # Check duplicate ID
         duplicate = False
 
-        for i in employees:
+        for i in employee:
             if isinstance(i, Employee):
                 if i.get_employee_id() == employee_id:
                     duplicate = True
                     break
 
         if duplicate:
-            print("Employee ID already exists. Please enter a unique ID.")
+            print(
+                "Employee ID already exists. "
+                "Please enter a unique ID."
+            )
         else:
-            name = input("Enter name: ")
-            age = int(input("Enter age: "))
-            salary = float(input("Enter salary: "))
-            programming_language = input(
-                "Enter programming language: "
-            )
+            developer = Developer.create_developer()
+            employee.append(developer)
 
-            developer = Developer(
-                name,
-                age,
-                employee_id,
-                salary,
-                programming_language
-            )
-
-            employees.append(developer)
-            print("Developer created successfully.")
-
-    # Show details
     elif choice == "5":
-        if not employees:
-            print("No employees or persons to display.")
+
+        if len(employee) == 0:
+            print("No records found.")
+
         else:
-            c = input(
-                "Enter type "
-                "(person/employee/manager/developer): "
-            ).lower()
+            d = int(
+                input(
+                    "Enter 1 for employees, "
+                    "2 for developers, "
+                    "3 for managers: "
+                )
+            )
 
-            d = input("Enter ID of employee: ")
-
-            found = False
-
-            if c == "person":
-                for i in employees:
-                    if type(i) == Person:
-                        i.display()
-                        found = True
-
-            elif c == "employee":
-                for i in employees:
+            if d == 1:
+                for obj in employee:
                     if (
-                        type(i) == Employee
-                        and i.get_employee_id() == d
+                        isinstance(obj, Employee)
+                        and not isinstance(obj, Manager)
+                        and not isinstance(obj, Developer)
                     ):
-                        i.display()
-                        found = True
+                        print(obj)
 
-            elif c == "manager":
-                for i in employees:
+            elif d == 2:
+                for obj in employee:
                     if (
-                        isinstance(i, Manager)
-                        and i.get_employee_id() == d
+                        isinstance(obj, Developer)
+                        and issubclass(Developer, Employee)
                     ):
-                        i.display()
-                        found = True
+                        print(obj)
 
-            elif c == "developer":
-                for i in employees:
+            elif d == 3:
+                for obj in employee:
                     if (
-                        isinstance(i, Developer)
-                        and i.get_employee_id() == d
+                        isinstance(obj, Manager)
+                        and issubclass(Manager, Employee)
                     ):
-                        i.display()
-                        found = True
+                        print(obj)
 
             else:
-                print("Invalid employee type.")
+                print("Invalid choice.")
 
-            if not found and c in [
-                "employee",
-                "manager",
-                "developer"
-            ]:
-                print("No matching employee found.")
-
-    # Exit
     elif choice == "6":
-        print("Exiting the program.")
+        print("Program exited.")
         break
 
     else:
-        print("Invalid choice. Please try again.")
+        print("Invalid choice.")
